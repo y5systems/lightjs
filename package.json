@@ -1,0 +1,28 @@
+{
+  "name": "lightjs",
+  "description": "A lightweight Node.js framework designed to simplify the creation of efficient applications.",
+  "version": "0.1.0",
+  "main": "./dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "build:clean": "rm -rf dist & npm run build",
+    "build:watch": "tsc -b -w",
+    "test": "vitest"
+  },
+  "keywords": [],
+  "author": "Y5 Systems (contact@y5.systems)",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/amqplib": "^0.10.5",
+    "@types/node": "^20.12.12",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5",
+    "vitest": "^1.6.0"
+  },
+  "dependencies": {
+    "amqplib": "^0.10.4",
+    "console-stamp": "^3.1.2",
+    "zod": "^3.23.8"
+  }
+}

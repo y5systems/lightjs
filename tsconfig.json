@@ -1,0 +1,22 @@
+{
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "strict": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "noEmitOnError": true,
+    "declaration": true,
+    "outDir": "dist",
+    "sourceMap": true,
+    "forceConsistentCasingInFileNames": true,
+    "target": "ESNext",
+    "skipLibCheck": true,
+  },
+}

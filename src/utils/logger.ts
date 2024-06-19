@@ -14,14 +14,14 @@ export function setupLog(prefixConfig?: {name: string}) {
 
 export function replacer(_key: string, value: any) {
   if (typeof value === 'bigint') {
-    return '0x' + value.toString(16) + 'n';
+    return '0x' + value.toString(16).toUpperCase() + 'n';
   }
 
   return value;
 }
 
 export function reviver(_key: string, value: any) {
-  const bigIntRegex = /^0x([0-9a-f]+)n$/;
+  const bigIntRegex = /^0x([0-9A-F]+)n$/;
   if (typeof value === 'string' && bigIntRegex.test(value)) {
     return BigInt(value.slice(0, -1));
   }

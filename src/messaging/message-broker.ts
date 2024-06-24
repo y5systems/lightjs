@@ -29,7 +29,7 @@ export default class MessageBroker {
     return this.#messageConsumers;
   }
 
-  async init(): Promise<void> {
+  async init(prefetchValue?: number): Promise<void> {
     await this.#rabbitmqManager.init();
 
     this.#eventEmitter.on(MESSAGE_BROKER_EVENTS.SEND_MESSAGE, (queue: string, name: string, data: Record<string, unknown>) => {
@@ -48,7 +48,7 @@ export default class MessageBroker {
       }
 
       await this.#messageConsumers.get(message.name)!.consume(message.data);
-    });
+    }, prefetchValue);
   }
 
   async close(): Promise<void> {

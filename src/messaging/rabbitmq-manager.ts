@@ -45,11 +45,12 @@ export default class RabbitmqManager {
     await this.#channel?.assertQueue(queueName);
   }
 
-  async attachConsumer(queueName: string, onMessage: (message: RabbitmqMessage) => Promise<void>) {
+  async attachConsumer(queueName: string, onMessage: (message: RabbitmqMessage) => Promise<void>, prefetch?: number) {
     if (!this.#channel) {
       return;
     }
 
+    await this.#channel.prefetch(prefetch ? prefetch : 0);
     await this.#channel.consume(queueName, async (msg: ConsumeMessage | null) => {
       if (!msg || !this.#channel) {
         return;

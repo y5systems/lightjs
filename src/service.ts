@@ -19,7 +19,7 @@ export default abstract class Service {
   }
 
   public async init(): Promise<void> {
-    await this.#messageBroker.init();
+    await this.#messageBroker.init(this.#serviceData.prefetchValue);
   }
 
   public async stop(): Promise<void> {

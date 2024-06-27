@@ -25,10 +25,6 @@ export default class MessageBroker {
     this.#messageConsumers = new Map();
   }
 
-  get messageConsumers(): Map<string, MessageConsumer> {
-    return this.#messageConsumers;
-  }
-
   async init(prefetchValue?: number): Promise<void> {
     await this.#rabbitmqManager.init();
 
@@ -58,5 +54,13 @@ export default class MessageBroker {
 
   sendMessage(targetQueue: string, messageName: string, messageData: Record<string, unknown>): void {
     this.#eventEmitter.emit(MESSAGE_BROKER_EVENTS.SEND_MESSAGE, targetQueue, messageName, messageData);
+  }
+
+  createMessageConsumer<T extends MessageConsumer>(
+    messageName: string,
+    messageConsumerClass: new (sendMessage: SendMessageType, ...args: any[]) => T,
+    ...args: any[]
+  ) {
+    this.#messageConsumers.set(messageName, new messageConsumerClass(this.sendMessage.bind(this), ...args));
   }
 }

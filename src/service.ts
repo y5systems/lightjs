@@ -1,7 +1,7 @@
-import MessageBroker from './messaging/message-broker.js';
+import {MessageBroker} from './messaging/message-broker.js';
 import {ServiceData} from './schemas/configuration.schema.js';
 
-export default abstract class Service {
+export abstract class Service {
   readonly #messageBroker: MessageBroker;
   readonly #serviceData: ServiceData;
 

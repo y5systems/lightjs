@@ -2,15 +2,15 @@ import {EventEmitter} from 'node:events';
 
 import RabbitmqManager from './rabbitmq-manager.js';
 import {RabbitmqMessage, RabbitmqMessageSchema} from '../schemas/rabbitmq-manager.schema.js';
-import MessageConsumer from './message-consumer.js';
+import {MessageConsumer} from './message-consumer.js';
 
-export type SendMessageType = (targetQueue: string, messageName: string, messageData: Record<string, unknown>) => void;
-
-export const MESSAGE_BROKER_EVENTS = {
+const MESSAGE_BROKER_EVENTS = {
   SEND_MESSAGE: 'send-message',
 } as const;
 
-export default class MessageBroker {
+export type SendMessageType = (targetQueue: string, messageName: string, messageData: Record<string, unknown>) => void;
+
+export class MessageBroker {
   readonly #rabbitmqManager: RabbitmqManager;
   readonly #queueName: string;
 
@@ -28,9 +28,12 @@ export default class MessageBroker {
   async init(prefetchValue?: number): Promise<void> {
     await this.#rabbitmqManager.init();
 
-    this.#eventEmitter.on(MESSAGE_BROKER_EVENTS.SEND_MESSAGE, (queue: string, name: string, data: Record<string, unknown>) => {
-      this.#rabbitmqManager.emit(queue, RabbitmqMessageSchema.parse({name, data}));
-    });
+    this.#eventEmitter.on(
+      MESSAGE_BROKER_EVENTS.SEND_MESSAGE,
+      (queue: string, name: string, data: Record<string, unknown>) => {
+        this.#rabbitmqManager.emit(queue, RabbitmqMessageSchema.parse({name, data}));
+      }
+    );
 
     if (this.#queueName === '') {
       return;

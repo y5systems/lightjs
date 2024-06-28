@@ -1,11 +1,11 @@
 import cluster from 'node:cluster';
 import {join} from 'node:path';
 
-import MessageBroker from './messaging/message-broker.js';
+import {MessageBroker} from './messaging/message-broker.js';
 import RabbitmqManager from './messaging/rabbitmq-manager.js';
 import {ServiceDataSchema, ServicesDataSchema} from './schemas/configuration.schema.js';
 import {EnvironmentSchema} from './schemas/environment.schema.js';
-import Service from './service.js';
+import {Service} from './service.js';
 import {loadConfiguration} from './utils/config-loader.js';
 import {setupLog} from './utils/logger.js';
 

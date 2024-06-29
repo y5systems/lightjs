@@ -1,17 +1,21 @@
-import {existsSync, readFileSync} from 'node:fs';
+import {readFileSync} from 'node:fs';
 
-export function loadConfiguration(filePath: string): Record<string, unknown> | null {
-  if (!existsSync(filePath)) {
-    console.error(`Configuration file not found. File: ${filePath}`);
-    return null;
-  }
-
+export function loadConfiguration(filePath: string): Record<string, unknown> {
   try {
-    console.log('Loading configuration file...');
-    return JSON.parse(readFileSync(filePath).toString());
+    return JSON.parse(readFileSync(filePath, {encoding: 'utf-8'}));
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    console.error(`Failed to parse config file. ${errorMessage}`);
-    return null;
+    let errorMessage = 'Unknown error';
+
+    if (error instanceof SyntaxError) {
+      errorMessage = `Json Parsing Error. ${error.message}`;
+    } else if (error instanceof Error) {
+      if ('code' in error) {
+        errorMessage = `File System Error. ${(error as NodeJS.ErrnoException).code} - ${error.message}`;
+      } else {
+        errorMessage = `Unknown error. ${error.message}`;
+      }
+    }
+
+    throw new Error(`Failed to load configuration from ${filePath}. ${errorMessage}`);
   }
 }

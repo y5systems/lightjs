@@ -2,7 +2,7 @@ import {Channel, connect, Connection, ConsumeMessage} from 'amqplib';
 import {EnvironmentSchema} from '../schemas/environment.schema.js';
 
 import {RabbitmqMessageSchema, RabbitmqMessage} from '../schemas/rabbitmq-manager.schema.js';
-import {replacer, reviver} from '../utils/logger.js';
+import {replacer, reviver} from '../utils/string-operations.js';
 
 export default class RabbitmqManager {
   #connection: Connection | null;

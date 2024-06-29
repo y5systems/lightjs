@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "amqplib": "^0.10.4",
-    "console-stamp": "^3.1.2",
+    "winston": "^3.13.0",
     "zod": "^3.23.8"
   }
 }

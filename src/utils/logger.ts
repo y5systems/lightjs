@@ -1,15 +1,28 @@
-import consoleStamp from 'console-stamp';
+import winston from 'winston';
 
-export function setupLog(prefixConfig?: {name: string}) {
-  // @ts-ignore
-  consoleStamp(console, {
-    format: ':label(7) :date(yyyy-mm-dd HH:MM:ss.l) :prefix()',
-    tokens: {
-      prefix: () => {
-        return !prefixConfig ? '[main]' : `[${prefixConfig.name}]`;
-      }
-    }
+const RegexPatterns = {
+  bigInt: /^0x([0-9A-F]+)n$/,
+  isoDate: /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/,
+} as const;
+
+export function setupLog(messagePrefix?: string) {
+  const logger = winston.createLogger({
+    level: 'debug',
+    format: winston.format.combine(
+      winston.format.timestamp(),
+      winston.format.printf(({level, message, timestamp}) => {
+        return `[${level.toUpperCase()}] [${timestamp}] ${messagePrefix ? `[${messagePrefix}]` : ''} ${message}`;
+      })
+    ),
+    transports: [new winston.transports.Console()],
   });
+
+  // Override the basic console methods
+  console.error = (...args) => logger.error(args);
+  console.warn = (...args) => logger.warn(args);
+  console.info = (...args) => logger.info(args);
+  console.log = (...args) => logger.info(args);
+  console.debug = (...args) => logger.debug(args);
 }
 
 export function replacer(_key: string, value: any) {
@@ -21,16 +34,13 @@ export function replacer(_key: string, value: any) {
 }
 
 export function reviver(_key: string, value: any) {
-  const bigIntRegex = /^0x([0-9A-F]+)n$/;
-  if (typeof value === 'string' && bigIntRegex.test(value)) {
+  if (typeof value === 'string' && RegexPatterns.bigInt.test(value)) {
     return BigInt(value.slice(0, -1));
   }
 
-  const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
-  if (typeof value === 'string' && isoDateRegex.test(value)) {
+  if (typeof value === 'string' && RegexPatterns.isoDate.test(value)) {
     return new Date(value);
   }
 
   return value;
 }
-

@@ -11,7 +11,7 @@ import {setupLog} from './utils/logger.js';
 
 export default async function startApplication(rootPath: string): Promise<void> {
   if (cluster.isPrimary) {
-    setupLog();
+    setupLog('main');
 
     const initTimestamp = Date.now();
     console.log('Initializing application...');
@@ -40,7 +40,7 @@ export default async function startApplication(rootPath: string): Promise<void> 
 
       const serviceData = ServiceDataSchema.parse(JSON.parse(env.SERVICE_DATA));
 
-      setupLog(serviceData);
+      setupLog(serviceData.name);
 
       console.log('Starting service...');
 

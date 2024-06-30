@@ -12,3 +12,5 @@ export const EnvironmentSchema = z.object({
 
   SERVICE_DATA: z.string().optional(),
 });
+
+export type Environment = z.infer<typeof EnvironmentSchema>;

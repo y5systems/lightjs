@@ -1,28 +1,37 @@
 {
-  "name": "lightjs",
-  "description": "A lightweight Node.js framework designed to simplify the creation of efficient applications.",
+  "name": "@y5systems/lightjs",
   "version": "0.1.0",
-  "main": "./dist/index.js",
+  "description": "A lightweight Node.js framework designed to simplify the creation of efficient applications.",
+  "keywords": [],
+  "homepage": "https://github.com/y5systems/lightjs#readme",
+  "bugs": {
+    "url": "https://github.com/y5systems/lightjs/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/y5systems/lightjs.git"
+  },
+  "license": "MIT",
+  "author": "Y5 Systems (contact@y5.systems)",
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "build:clean": "rm -rf dist & npm run build",
     "build:watch": "tsc -b -w",
     "test": "vitest"
   },
-  "keywords": [],
-  "author": "Y5 Systems (contact@y5.systems)",
-  "license": "MIT",
+  "dependencies": {
+    "amqplib": "^0.10.4",
+    "winston": "^3.13.0",
+    "zod": "^3.23.8"
+  },
   "devDependencies": {
     "@types/amqplib": "^0.10.5",
     "@types/node": "^20.12.12",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5",
     "vitest": "^1.6.0"
-  },
-  "dependencies": {
-    "amqplib": "^0.10.4",
-    "winston": "^3.13.0",
-    "zod": "^3.23.8"
   }
 }

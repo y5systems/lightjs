@@ -17,11 +17,17 @@ export abstract class Service {
     return this.#serviceData;
   }
 
-  get messageBroker(): MessageBroker | undefined {
+  get messageBroker(): MessageBroker {
+    if (!this.#messageBroker) {
+      throw new Error('MessageBroker not initialized');
+    }
     return this.#messageBroker;
   }
 
-  get apiServer(): ApiServer | undefined {
+  get apiServer(): ApiServer {
+    if (!this.#apiServer) {
+      throw new Error('ApiServer not initialized');
+    }
     return this.#apiServer;
   }
 

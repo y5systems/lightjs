@@ -5,8 +5,8 @@ export * from './service.js';
 export * from './messaging/message-broker.js';
 export * from './messaging/message-consumer.js';
 
-import {ServiceData} from './schemas/configuration.schema.js';
-export {ServiceData};
+import { ServiceData } from './schemas/service-data.schema.js';
+export { ServiceData };
 
-import {replacer, reviver} from './utils/string-operations.js';
-export const utils = {replacer, reviver};
+import { replacer, reviver } from './utils/string-operations.js';
+export const utils = { replacer, reviver };

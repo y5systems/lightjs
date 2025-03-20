@@ -1,10 +1,12 @@
-import {SendMessageType} from './message-broker.js';
+import { MessageBroker } from './message-broker.js';
+
+type ProduceMessageSignature = typeof MessageBroker.prototype.produceMessage;
 
 export abstract class MessageConsumer {
-  protected sendMessage: SendMessageType;
+  protected produceMessage: ProduceMessageSignature;
 
-  protected constructor(sendMessage: SendMessageType) {
-    this.sendMessage = sendMessage;
+  protected constructor(produceMessage: ProduceMessageSignature) {
+    this.produceMessage = produceMessage;
   }
 
   abstract consume(data: Record<string, unknown>): Promise<void>;

@@ -1,30 +1,49 @@
-import {MessageBroker} from './messaging/message-broker.js';
-import {ServiceData} from './schemas/configuration.schema.js';
+import { ApiServer } from './api/api-server.js';
+import { MessageBroker } from './messaging/message-broker.js';
+import { ServiceData } from './schemas/service-data.schema.js';
 
 export abstract class Service {
-  readonly #messageBroker: MessageBroker;
   readonly #serviceData: ServiceData;
+  readonly #messageBroker?: MessageBroker;
+  readonly #apiServer?: ApiServer;
 
-  protected constructor(messageHandler: MessageBroker, serviceData: ServiceData) {
-    this.#messageBroker = messageHandler;
+  protected constructor(serviceData: ServiceData, messageBroker?: MessageBroker, apiServer?: ApiServer) {
     this.#serviceData = serviceData;
-  }
-
-  get messageBroker(): MessageBroker {
-    return this.#messageBroker;
+    this.#messageBroker = messageBroker;
+    this.#apiServer = apiServer;
   }
 
   get serviceData(): ServiceData {
     return this.#serviceData;
   }
 
-  public async init(): Promise<void> {
-    await this.#messageBroker.init(this.#serviceData.prefetchValue);
+  get messageBroker(): MessageBroker | undefined {
+    return this.#messageBroker;
   }
 
-  public async stop(): Promise<void> {
-    await this.#messageBroker.close();
+  get apiServer(): ApiServer | undefined {
+    return this.#apiServer;
   }
 
-  public abstract run(): Promise<void>;
+  public async init() {
+    if (this.#messageBroker) {
+      await this.#messageBroker.init(this.#serviceData.messageBroker?.prefetchValue);
+    }
+
+    if (this.#apiServer) {
+      await this.#apiServer.init(this.#serviceData.apiServer?.path);
+    }
+  }
+
+  public async stop() {
+    if (this.#messageBroker) {
+      await this.#messageBroker.stop();
+    }
+  }
+
+  public async run() {
+    if (this.#apiServer) {
+      await this.#apiServer.start(this.#serviceData.apiServer?.host, this.#serviceData.apiServer?.port);
+    }
+  }
 }

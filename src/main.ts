@@ -1,14 +1,13 @@
 import cluster from 'node:cluster';
-import {join} from 'node:path';
-import {ZodError} from 'zod';
+import { join } from 'node:path';
 
-import {MessageBroker} from './messaging/message-broker.js';
-import RabbitmqManager from './messaging/rabbitmq-manager.js';
-import {ServiceData, ServiceDataSchema, ServicesDataSchema} from './schemas/configuration.schema.js';
-import {Environment, EnvironmentSchema} from './schemas/environment.schema.js';
-import {Service} from './service.js';
-import {loadConfiguration} from './utils/config-loader.js';
-import {setupLog} from './utils/logger.js';
+import { ZodError } from 'zod';
+
+import { ServiceBuilder } from './service-builder.js';
+import { ServiceData, ServiceDataSchema, ServicesDataSchema } from './schemas/service-data.schema.js';
+import { Environment, EnvironmentSchema } from './schemas/environment.schema.js';
+import { loadConfiguration } from './utils/config-loader.js';
+import { setupLog } from './utils/logger.js';
 
 export default async function startApplication(rootPath: string): Promise<void> {
   let env: Environment;
@@ -73,7 +72,7 @@ async function initServices(rootPath: string, env: Environment) {
     }
 
     const promiseResults = await Promise.allSettled(servicesData.map((serviceData) => {
-      return createService(serviceData);
+      return createServiceProcess(serviceData);
     }));
 
     promiseResults.forEach((promiseResult) => {
@@ -94,7 +93,7 @@ async function initServices(rootPath: string, env: Environment) {
   });
 }
 
-function createService(serviceData: ServiceData) {
+function createServiceProcess(serviceData: ServiceData) {
   return new Promise<void>(async (resolve, reject) => {
     try {
       const service = cluster.fork({
@@ -137,12 +136,12 @@ async function startService(rootPath: string, env: Environment) {
 
     console.log('Starting service...');
 
-    const rabbitmqManager = new RabbitmqManager();
-    const messageHandler = new MessageBroker(rabbitmqManager, serviceData.service);
+    const modulePath = join(rootPath, 'services', serviceData.service);
+    // serviceData.path = modulePath;
 
-    const modulePath = join(rootPath, 'services', serviceData.service, `${serviceData.service}.js`);
-    const module = await import(modulePath);
-    const service = new module.default(messageHandler, serviceData) as Service;
+    const module = await import(join(modulePath, `${serviceData.service}.js`));
+    const ServiceClass = module.default;
+    const service = new ServiceBuilder(serviceData).build(ServiceClass);
 
     // Execute service tasks based on received message from main process
     process.on('message', async (message: string): Promise<void> => {

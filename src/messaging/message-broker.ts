@@ -1,14 +1,12 @@
-import {EventEmitter} from 'node:events';
+import { EventEmitter } from 'node:events';
 
 import RabbitmqManager from './rabbitmq-manager.js';
-import {RabbitmqMessage, RabbitmqMessageSchema} from '../schemas/rabbitmq-manager.schema.js';
-import {MessageConsumer} from './message-consumer.js';
+import { RabbitmqMessage, RabbitmqMessageSchema } from '../schemas/rabbitmq-manager.schema.js';
+import { MessageConsumer } from './message-consumer.js';
 
 const MESSAGE_BROKER_EVENTS = {
   SEND_MESSAGE: 'send-message',
 } as const;
-
-export type SendMessageType = (targetQueue: string, messageName: string, messageData: Record<string, unknown>) => void;
 
 export class MessageBroker {
   readonly #rabbitmqManager: RabbitmqManager;
@@ -31,7 +29,7 @@ export class MessageBroker {
     this.#eventEmitter.on(
       MESSAGE_BROKER_EVENTS.SEND_MESSAGE,
       (queue: string, name: string, data: Record<string, unknown>) => {
-        this.#rabbitmqManager.emit(queue, RabbitmqMessageSchema.parse({name, data}));
+        this.#rabbitmqManager.emit(queue, RabbitmqMessageSchema.parse({ name, data }));
       }
     );
 
@@ -50,20 +48,20 @@ export class MessageBroker {
     }, prefetchValue);
   }
 
-  async close(): Promise<void> {
+  async stop(): Promise<void> {
     await this.#rabbitmqManager.close();
     this.#eventEmitter.removeAllListeners();
   }
 
-  sendMessage(targetQueue: string, messageName: string, messageData: Record<string, unknown>): void {
+  produceMessage(targetQueue: string, messageName: string, messageData: Record<string, unknown>): void {
     this.#eventEmitter.emit(MESSAGE_BROKER_EVENTS.SEND_MESSAGE, targetQueue, messageName, messageData);
   }
 
   createMessageConsumer<T extends MessageConsumer>(
     messageName: string,
-    messageConsumerClass: new (sendMessage: SendMessageType, ...args: any[]) => T,
+    messageConsumerClass: new (...args: any[]) => T,
     ...args: any[]
   ) {
-    this.#messageConsumers.set(messageName, new messageConsumerClass(this.sendMessage.bind(this), ...args));
+    this.#messageConsumers.set(messageName, new messageConsumerClass(this.produceMessage.bind(this), ...args));
   }
 }

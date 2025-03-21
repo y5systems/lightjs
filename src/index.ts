@@ -2,6 +2,8 @@ import startApplication from './main.js';
 export default startApplication;
 
 export * from './service.js';
+export * from './api/api-server.js';
+export * from './api/fastify-adapter.js';
 export * from './messaging/message-broker.js';
 export * from './messaging/message-consumer.js';
 

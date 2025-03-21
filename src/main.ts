@@ -3,7 +3,7 @@ import { join } from 'node:path';
 
 import { ZodError } from 'zod';
 
-import { ServiceBuilder } from './service-builder.js';
+import { ServiceBuilder } from './service.builder.js';
 import { ServiceData, ServiceDataSchema, ServicesDataSchema } from './schemas/service-data.schema.js';
 import { Environment, EnvironmentSchema } from './schemas/environment.schema.js';
 import { loadConfiguration } from './utils/config-loader.js';

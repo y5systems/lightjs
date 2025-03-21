@@ -40,6 +40,7 @@ export class FastifyAdapter implements ApiAdapter {
 
   public async start(host?: string, port?: number) {
     await this.#fastify.listen({ host: host ?? '0.0.0.0', port: port ?? 3000 });
+    console.log(`Listening for requests on ${host}:${port}`);
   }
 
   public asFastify(): FastifyExtensions {

@@ -4,30 +4,30 @@ import { ServiceData } from './schemas/service-data.schema.js';
 
 export abstract class Service {
   readonly #serviceData: ServiceData;
-  readonly #messageBroker?: MessageBroker;
-  readonly #apiServer?: ApiServer;
+  #messageBroker?: MessageBroker;
+  #apiServer?: ApiServer;
 
-  protected constructor(serviceData: ServiceData, messageBroker?: MessageBroker, apiServer?: ApiServer) {
+  protected constructor(serviceData: ServiceData) {
     this.#serviceData = serviceData;
-    this.#messageBroker = messageBroker;
-    this.#apiServer = apiServer;
   }
 
   get serviceData(): ServiceData {
     return this.#serviceData;
   }
 
-  get messageBroker(): MessageBroker {
-    if (!this.#messageBroker) {
-      throw new Error('MessageBroker not initialized');
-    }
+  set messageBroker(messageBroker: MessageBroker) {
+    this.#messageBroker = messageBroker;
+  }
+
+  get messageBroker(): MessageBroker | undefined {
     return this.#messageBroker;
   }
 
-  get apiServer(): ApiServer {
-    if (!this.#apiServer) {
-      throw new Error('ApiServer not initialized');
-    }
+  set apiServer(apiServer: ApiServer) {
+    this.#apiServer = apiServer;
+  }
+
+  get apiServer(): ApiServer | undefined {
     return this.#apiServer;
   }
 

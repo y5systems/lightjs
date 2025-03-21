@@ -137,11 +137,12 @@ async function startService(rootPath: string, env: Environment) {
     console.log('Starting service...');
 
     const modulePath = join(rootPath, 'services', serviceData.service);
-    // serviceData.path = modulePath;
+    if (serviceData.apiServer) {
+      serviceData.apiServer.path = modulePath;
+    }
 
     const module = await import(join(modulePath, `${serviceData.service}.js`));
-    const ServiceClass = module.default;
-    const service = new ServiceBuilder(serviceData).build(ServiceClass);
+    const service = new ServiceBuilder(serviceData).build(module.default);
 
     // Execute service tasks based on received message from main process
     process.on('message', async (message: string): Promise<void> => {

@@ -4,7 +4,7 @@ export const ServiceDataSchema = z.object({
   service: z.string(),
   name: z.string(),
   messageBroker: z.object({
-    name: z.string(),
+    queueName: z.string(),
     prefetchValue: z.number().optional(),
   }).optional(),
   apiServer: z.object({

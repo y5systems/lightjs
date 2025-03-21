@@ -13,17 +13,19 @@ export class ServiceBuilder {
   }
 
   build<T extends Service>(ServiceClass: new (...args: any[]) => T): T {
+    const service = new ServiceClass(this.serviceData);
+
     let messageBroker: MessageBroker | undefined;
     if (this.serviceData.messageBroker) {
       const rabbitmqManager = new RabbitmqManager();
-      messageBroker = new MessageBroker(rabbitmqManager, this.serviceData.messageBroker.name);
+      messageBroker = new MessageBroker(rabbitmqManager, this.serviceData.messageBroker.queueName);
+      service.messageBroker = messageBroker;
     }
 
-    let apiServer: ApiServer | undefined;
     if (this.serviceData.apiServer) {
       switch (this.serviceData.apiServer.framework) {
         case 'fastify':
-          apiServer = ApiServerBuilder.withFastify()
+          service.apiServer = ApiServerBuilder.withFastify()
             .withDecorator((instance) => {
               instance.messageBroker = messageBroker;
             })
@@ -34,6 +36,6 @@ export class ServiceBuilder {
       }
     }
 
-    return new ServiceClass(this.serviceData, messageBroker, apiServer);
+    return service;
   }
 }

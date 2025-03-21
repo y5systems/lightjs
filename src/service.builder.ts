@@ -1,4 +1,3 @@
-import { ApiServer } from './api/api-server.js';
 import { ApiServerBuilder } from './api/api-server.builder.js';
 import { MessageBroker } from './messaging/message-broker.js';
 import RabbitmqManager from './messaging/rabbitmq-manager.js';

@@ -19,7 +19,11 @@ export abstract class Service {
     this.#messageBroker = messageBroker;
   }
 
-  get messageBroker(): MessageBroker | undefined {
+  get messageBroker(): MessageBroker {
+    if (!this.#messageBroker) {
+      throw new Error('MessageBroker not initialized');
+    }
+
     return this.#messageBroker;
   }
 
@@ -27,7 +31,11 @@ export abstract class Service {
     this.#apiServer = apiServer;
   }
 
-  get apiServer(): ApiServer | undefined {
+  get apiServer(): ApiServer {
+    if (!this.#apiServer) {
+      throw new Error('ApiServer not initialized');
+    }
+
     return this.#apiServer;
   }
 
